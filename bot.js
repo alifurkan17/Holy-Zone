@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const playdl = require('play-dl');
 const dotenv = require('dotenv');
-const axios = require('axios');
 dotenv.config();
 
 const {
@@ -20,41 +19,6 @@ const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 const retryAttempts = 3;
 let currentConnection;
 let playlist = [];
-
-function getVideoIdFromUrl(url) {
-    let videoId;
-    if (url.includes('youtu.be/')) {
-        videoId = url.split('youtu.be/')[1].split('?')[0];
-    } else if (url.includes('youtube.com/watch')) {
-        videoId = url.split('v=')[1].split('&')[0];
-    } else if (url.includes('youtube.com/')) {
-        videoId = url.split('youtube.com/')[1].split('?')[0];
-    }
-    return videoId;
-}
-
-async function getVideoTitleFromYouTubeAPI(url) {
-    try {
-        const videoId = getVideoIdFromUrl(url);
-        console.log('Video ID:', videoId); // Debug için eklendi
-        if (!videoId) {
-            console.error('Geçersiz YouTube URL\'si:', url);
-            return 'Unknown';
-        }
-
-        const response = await axios.get(`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${process.env.YOUTUBE_API_KEY}&part=snippet`);
-        if (response.data.items.length > 0) {
-            const title = response.data.items[0].snippet.title;
-            return title;
-        } else {
-            console.error('YouTube API yanıtı beklenen veriye sahip değil:', response.data);
-            return 'Unknown';
-        }
-    } catch (error) {
-        console.error('Video başlığını alma sırasında bir hata oluştu:', error);
-        return 'Unknown';
-    }
-}
 
 async function playSong(song, connection, interaction, attempt = 1) {
     try {
