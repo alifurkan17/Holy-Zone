@@ -72,14 +72,18 @@ const client = new Client({
             }
         });
 
+        const player = createAudioPlayer();
+        
         client.on('interactionCreate', async (interaction) => {
             if (!interaction.isCommand()) return;
-            const player = createAudioPlayer();
+         
         
             const command = interaction.commandName;
             await interaction.deferReply();
             if (command === 'çal') {
+
                 const memberVoiceChannel = interaction.member.voice.channel;
+
                 currentConnection = joinVoiceChannel({
                     channelId: memberVoiceChannel.id,
                     guildId: interaction.guild.id,
@@ -109,7 +113,7 @@ const client = new Client({
                     return await interaction.editReply("Lütfen youtube bağlantısını giriniz.");
                 }
 
-                if(player.state.status === AudioPlayerStatus.Playing)
+                if(player.state.status == AudioPlayerStatus.Playing)
                 {
                     await interaction.editReply("Sıraya eklendi : " + `${title}`);
                     playlist.push({ title: title, url: stream_url });
@@ -171,7 +175,7 @@ const client = new Client({
                 playlist = [];
                 return await interaction.editReply('Çalma listesi temizlendi.');
             } else if (command === 'liste') {
-                const songList = playlist.map((song, index) => `${index + 1}. ${song}`).join('\n');
+                const songList = playlist.map((song, index) => `${index + 1}. ${song.title}`).join('\n');
                 return await interaction.editReply(`Çalma Listesi:\n${songList}`);
             }
 
